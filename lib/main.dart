@@ -2,30 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 void main() {
-  runApp(Calculator());
+  runApp(const MyApp());
 }
 
-class Calculator extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Calculator',
+      title: 'My Pinky Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: MyHomePage(title: 'My Simple Calculator'),
+      home: const MyHomePage(title: 'My Pinky Calculator'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
+  const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -87,16 +89,16 @@ class _MyHomePageState extends State<MyHomePage> {
       color: buttonColor,
       child: TextButton(
         style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0.0),
           ),
-          padding: EdgeInsets.all(16.0),
-          primary: Colors.white,
+          padding: const EdgeInsets.all(16.0),
         ),
         onPressed: () => buttonPressed(buttonText),
         child: Text(
           buttonText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 30.0,
             fontWeight: FontWeight.normal,
             color: Colors.white,
@@ -110,14 +112,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 255, 0, 153),
         title: Text(widget.title),
-        backgroundColor: Color.fromARGB(255, 255, 0, 153),
       ),
       body: Column(
         children: <Widget>[
           Container(
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+            padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
             child: Text(
               equation,
               style: TextStyle(fontSize: equationFontSize),
@@ -125,24 +127,25 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Container(
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
+            padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
             child: Text(
               result,
               style: TextStyle(fontSize: resultFontSize),
             ),
           ),
-          Expanded(
+          const Expanded(
             child: Divider(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * .75,
                 child: Table(
                   children: [
                     TableRow(children: [
-                      buildButton("C", 1, Color.fromARGB(255, 255, 0, 153)),
+                      buildButton(
+                          "C", 1, const Color.fromARGB(255, 255, 0, 153)),
                       buildButton("⌫", 1, const Color.fromARGB(255, 0, 0, 0)),
                       buildButton("÷", 1, const Color.fromARGB(255, 0, 0, 0)),
                     ]),
@@ -169,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * .25,
                 child: Table(
                   children: [
@@ -183,7 +186,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       buildButton("+", 1, const Color.fromARGB(255, 0, 0, 0)),
                     ]),
                     TableRow(children: [
-                      buildButton("=", 2, Color.fromARGB(255, 255, 0, 153)),
+                      buildButton(
+                          "=", 2, const Color.fromARGB(255, 255, 0, 153)),
                     ]),
                   ],
                 ),
