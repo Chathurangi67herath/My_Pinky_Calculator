@@ -10,7 +10,7 @@ class Calculator extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'alculator',
+      title: 'Calculator',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -34,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
   String expression = "";
   double equationFontSize = 38.0;
   double resultFontSize = 48.0;
-  bool doubleTapped = false;
 
   buttonPressed(String buttonText) {
     setState(() {
@@ -51,32 +50,28 @@ class _MyHomePageState extends State<MyHomePage> {
           equation = "0";
         }
       } else if (buttonText == "=") {
-        if (doubleTapped) {
+        equationFontSize = 38.0;
+        resultFontSize = 48.0;
+
+        expression = equation;
+        expression = expression.replaceAll('×', '*');
+        expression = expression.replaceAll('÷', '/');
+
+        try {
+          Parser p = Parser();
+          Expression exp = p.parse(expression);
+
+          ContextModel cm = ContextModel();
+          result = '${exp.evaluate(EvaluationType.REAL, cm)}';
           equation = result;
-          result = "0";
-          doubleTapped = false;
-        } else {
-          equationFontSize = 38.0;
-          resultFontSize = 48.0;
-
-          expression = equation;
-          expression = expression.replaceAll('×', '*');
-          expression = expression.replaceAll('÷', '/');
-
-          try {
-            Parser p = Parser();
-            Expression exp = p.parse(expression);
-
-            ContextModel cm = ContextModel();
-            result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-          } catch (e) {
-            result = "Error";
-          }
+        } catch (e) {
+          result = "Error";
+          equation = "Error";
         }
       } else {
         equationFontSize = 48.0;
         resultFontSize = 38.0;
-        if (equation == "0") {
+        if (equation == "0" || equation == "Error") {
           equation = buttonText;
         } else {
           equation = equation + buttonText;
@@ -87,33 +82,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildButton(
       String buttonText, double buttonHeight, Color buttonColor) {
-    return GestureDetector(
-      onDoubleTap: () {
-        if (buttonText == "=") {
-          doubleTapped = true;
-          buttonPressed(buttonText);
-        }
-      },
-      child: Container(
-        // ... (your existing code)
-        height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
-        color: buttonColor,
-        child: TextButton(
-          style: TextButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0.0),
-            ),
-            padding: EdgeInsets.all(16.0),
-            primary: Colors.white,
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
+      color: buttonColor,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0.0),
           ),
-          onPressed: () => buttonPressed(buttonText),
-          child: Text(
-            buttonText,
-            style: TextStyle(
-              fontSize: 30.0,
-              fontWeight: FontWeight.normal,
-              color: Colors.white,
-            ),
+          padding: EdgeInsets.all(16.0),
+          primary: Colors.white,
+        ),
+        onPressed: () => buttonPressed(buttonText),
+        child: Text(
+          buttonText,
+          style: TextStyle(
+            fontSize: 30.0,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
           ),
         ),
       ),
