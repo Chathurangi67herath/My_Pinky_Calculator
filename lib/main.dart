@@ -10,11 +10,11 @@ class Calculator extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Calculator',
+      title: 'alculator',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Calculator'),
+      home: MyHomePage(title: 'My Simple Calculator'),
     );
   }
 }
@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String expression = "";
   double equationFontSize = 38.0;
   double resultFontSize = 48.0;
+  bool doubleTapped = false;
 
   buttonPressed(String buttonText) {
     setState(() {
@@ -50,21 +51,27 @@ class _MyHomePageState extends State<MyHomePage> {
           equation = "0";
         }
       } else if (buttonText == "=") {
-        equationFontSize = 38.0;
-        resultFontSize = 48.0;
+        if (doubleTapped) {
+          equation = result;
+          result = "0";
+          doubleTapped = false;
+        } else {
+          equationFontSize = 38.0;
+          resultFontSize = 48.0;
 
-        expression = equation;
-        expression = expression.replaceAll('×', '*');
-        expression = expression.replaceAll('÷', '/');
+          expression = equation;
+          expression = expression.replaceAll('×', '*');
+          expression = expression.replaceAll('÷', '/');
 
-        try {
-          Parser p = Parser();
-          Expression exp = p.parse(expression);
+          try {
+            Parser p = Parser();
+            Expression exp = p.parse(expression);
 
-          ContextModel cm = ContextModel();
-          result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-        } catch (e) {
-          result = "Error";
+            ContextModel cm = ContextModel();
+            result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+          } catch (e) {
+            result = "Error";
+          }
         }
       } else {
         equationFontSize = 48.0;
@@ -80,23 +87,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildButton(
       String buttonText, double buttonHeight, Color buttonColor) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
-      color: buttonColor,
-      child: FlatButton(
-          shape: RoundedRectangleBorder(
+    return GestureDetector(
+      onDoubleTap: () {
+        if (buttonText == "=") {
+          doubleTapped = true;
+          buttonPressed(buttonText);
+        }
+      },
+      child: Container(
+        // ... (your existing code)
+        height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
+        color: buttonColor,
+        child: TextButton(
+          style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0.0),
-              side: BorderSide(
-                  color: Colors.white, width: 1, style: BorderStyle.solid)),
-          padding: EdgeInsets.all(16.0),
+            ),
+            padding: EdgeInsets.all(16.0),
+            primary: Colors.white,
+          ),
           onPressed: () => buttonPressed(buttonText),
           child: Text(
             buttonText,
             style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.normal,
-                color: Colors.white),
-          )),
+              fontSize: 30.0,
+              fontWeight: FontWeight.normal,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -105,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Color.fromARGB(255, 255, 0, 153),
       ),
       body: Column(
         children: <Widget>[
@@ -135,9 +156,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Table(
                   children: [
                     TableRow(children: [
-                      buildButton("C", 1, Colors.redAccent),
-                      buildButton("⌫", 1, Colors.blue),
-                      buildButton("÷", 1, Colors.blue),
+                      buildButton("C", 1, Color.fromARGB(255, 255, 0, 153)),
+                      buildButton("⌫", 1, const Color.fromARGB(255, 0, 0, 0)),
+                      buildButton("÷", 1, const Color.fromARGB(255, 0, 0, 0)),
                     ]),
                     TableRow(children: [
                       buildButton("7", 1, Colors.black54),
@@ -167,16 +188,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Table(
                   children: [
                     TableRow(children: [
-                      buildButton("×", 1, Colors.blue),
+                      buildButton("×", 1, const Color.fromARGB(255, 0, 0, 0)),
                     ]),
                     TableRow(children: [
-                      buildButton("-", 1, Colors.blue),
+                      buildButton("-", 1, const Color.fromARGB(255, 0, 0, 0)),
                     ]),
                     TableRow(children: [
-                      buildButton("+", 1, Colors.blue),
+                      buildButton("+", 1, const Color.fromARGB(255, 0, 0, 0)),
                     ]),
                     TableRow(children: [
-                      buildButton("=", 2, Colors.redAccent),
+                      buildButton("=", 2, Color.fromARGB(255, 255, 0, 153)),
                     ]),
                   ],
                 ),
